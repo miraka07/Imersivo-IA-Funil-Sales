@@ -38,7 +38,7 @@
 
   function loadGtm() {
     var gtmId = clean(config.gtmId);
-    if (!gtmId || document.querySelector('script[data-codeben-gtm]')) return;
+    if (!gtmId || document.querySelector('script[data-codeben-gtm], script[src*="googletagmanager.com/gtm.js"]')) return;
     var script = document.createElement('script');
     script.async = true;
     script.dataset.codebenGtm = 'true';
