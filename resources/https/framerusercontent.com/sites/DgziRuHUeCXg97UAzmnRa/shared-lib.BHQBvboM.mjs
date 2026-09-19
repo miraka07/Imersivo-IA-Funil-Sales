@@ -1,0 +1,2 @@
+import{t as e}from"./rolldown-runtime.Dh6celcD.mjs";function t(e,t){return{description:`Ensinamos IA aplicada ao novo mercado.`,favicon:`https://framerusercontent.com/assets/fP8tAja38YH75imjigz6EqSeGuE.png`,robots:`max-image-preview:large`,socialImage:`https://framerusercontent.com/assets/OBbWydsJ12kSMesc5EXlRvrNx04.png`,title:`CODEBEN`}}var n=e((()=>{}));export{t as n,n as t};
+//# sourceMappingURL=shared-lib.BHQBvboM.mjs.map
