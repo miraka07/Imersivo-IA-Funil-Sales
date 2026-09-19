@@ -19,6 +19,7 @@ cpSync(join(root, 'assets'), join(output, 'assets'), { recursive: true });
 cpSync(join(root, 'resources', 'https'), join(output, '__sitecloner_resource__', 'https'), { recursive: true });
 cpSync(join(root, 'codeben-copy.css'), join(output, 'css', 'codeben-copy.css'));
 cpSync(join(root, 'codeben-copy.js'), join(output, 'js', 'codeben-copy.js'));
+cpSync(join(root, 'codeben-tracking.js'), join(output, 'js', 'codeben-tracking.js'));
 cpSync(join(root, 'sitecloner-runtime.js'), join(output, 'js', 'sitecloner-runtime.js'));
 
 let html = readFileSync(join(root, 'index.html'), 'utf8');
@@ -33,13 +34,16 @@ const mainLoader = `<script>(function(){var src=${JSON.stringify(mainBundle[1])}
 html = html.replace(mainBundle[0], mainLoader);
 html = html.replaceAll('href="/codeben-copy.css"', 'href="/css/codeben-copy.css"');
 html = html.replaceAll('src="/codeben-copy.js"', 'src="/js/codeben-copy.js"');
+html = html.replaceAll('src="/codeben-tracking.js"', 'src="/js/codeben-tracking.js"');
 html = html.replaceAll('src="/sitecloner-runtime.js"', 'src="/js/sitecloner-runtime.js"');
 html = html.replace('<script src="/js/sitecloner-runtime.js"></script>', '<script src="/js/sitecloner-runtime.js" defer></script>');
 const copyScript = '<script src="/js/codeben-copy.js" defer></script>';
 const copyLoader = `<script>(function(){var src='/js/codeben-copy.js',loaded=false;function load(){if(loaded)return;loaded=true;var s=document.createElement('script');s.defer=true;s.src=src;document.body.appendChild(s)}if(window.matchMedia&&window.matchMedia('(max-width: 809px)').matches){['pointerdown','touchstart','scroll','keydown'].forEach(function(e){window.addEventListener(e,load,{once:true,passive:true})});setTimeout(load,15000)}else load()})();</script>`;
 if (!html.includes(copyScript)) throw new Error('CODEBEN copy script not found in captured HTML');
 html = html.replace(copyScript, copyLoader);
-for (const path of ['/css/codeben-copy.css', '/js/codeben-copy.js', '/js/sitecloner-runtime.js']) {
+const trackingScript = '<script src="/js/codeben-tracking.js" defer></script>';
+if (!html.includes(trackingScript)) throw new Error('CODEBEN tracking script not found in captured HTML');
+for (const path of ['/css/codeben-copy.css', '/js/codeben-copy.js', '/js/codeben-tracking.js', '/js/sitecloner-runtime.js']) {
   if (!html.includes(path)) throw new Error(`Built HTML does not reference ${path}`);
 }
 writeFileSync(join(output, 'index.html'), html);

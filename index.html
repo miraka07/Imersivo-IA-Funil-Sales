@@ -401,4 +401,12 @@ Você recebe o arsenal usado durante a execução para aplicar o mesmo processo 
     (document.body || document.documentElement).appendChild(b);
   } catch (e) {}
 })();</script>
-<script src="/codeben-copy.js" defer></script></body></html>
+<script>
+  window.CODEBEN_TRACKING_CONFIG = {
+    gtmId: '',
+    metaPixelId: '',
+    metaPixelDirect: false,
+    capiEnabled: false,
+    capiEndpoint: '/api/meta-capi'
+  };
+</script><script src="/codeben-copy.js" defer></script><script src="/codeben-tracking.js" defer></script></body></html>
