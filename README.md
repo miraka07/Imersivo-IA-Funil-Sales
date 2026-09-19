@@ -26,7 +26,7 @@ Para ativar o container, preencha `gtmId` em `index.html` dentro de `window.CODE
 2. Um acionador **Custom Event** para `page_view` e a tag de PageView.
 3. Variáveis de camada de dados para `cta_name`, `cta_location`, `button_text`, `event_id`, `value` e `currency`.
 
-Se preferir instalar o Pixel diretamente enquanto o container ainda está em revisão, preencha `metaPixelId` e altere `metaPixelDirect` para `true`. Use somente uma das opções (tag do GTM ou Pixel direto) para evitar eventos duplicados.
+Enquanto o container do GTM não está autenticado, o Pixel configurado no site é `2285516122199897` via carga direta (`metaPixelDirect: true`). Assim que o GTM for publicado, altere `metaPixelDirect` para `false` e deixe o Pixel somente na tag do GTM para evitar eventos duplicados.
 
 O endpoint `api/meta-capi.js` está pronto para enviar o mesmo `InitiateCheckout` à Meta com o `event_id` compartilhado. No Vercel, configure `META_PIXEL_ID`, `META_ACCESS_TOKEN` e opcionalmente `META_GRAPH_VERSION`; depois altere `capiEnabled` para `true` na configuração do site. O token fica somente no ambiente do servidor. Eventos de `Purchase` devem ser enviados a partir de confirmação da Cakto/webhook, nunca no clique do CTA.
 
