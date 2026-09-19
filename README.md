@@ -18,13 +18,13 @@ Importe este repositório com a raiz como **Root Directory**. O arquivo `vercel.
 
 ## Tracking (GTM + Meta)
 
-O site já envia eventos sem PII para `window.dataLayer`: `page_view`, `cta_clicked` e `checkout_started`. Cada CTA carrega `button_text`, `cta_name`, `cta_index`, `cta_location`, URL de destino e parâmetros de campanha (`utm_*`, `gclid` e `fbclid`). O clique também gera um `event_id` estável apenas para a deduplicação daquela ação.
+O site já envia eventos sem PII para `window.dataLayer`: `page_view`, `cta_click`, `initiate_checkout`, `section_view` e `scroll_depth`. Cada CTA carrega `cta_text`, `cta_name`, `cta_index`, `cta_location`, `destination_url`, `event_id` e parâmetros de campanha (`utm_*`, `gclid` e `fbclid`). O `event_id` existe apenas para a deduplicação daquela ação entre Pixel e CAPI.
 
 Para ativar o container, preencha `gtmId` em `index.html` dentro de `window.CODEBEN_TRACKING_CONFIG`. O script carrega o GTM de forma assíncrona depois do carregamento da página, mantendo o caminho crítico do mobile leve. No GTM, crie:
 
-1. Um acionador **Custom Event** para `cta_clicked` e uma tag Meta Pixel com o evento `InitiateCheckout`.
+1. Um acionador **Custom Event** para `initiate_checkout` e uma tag Meta Pixel com o evento `InitiateCheckout`.
 2. Um acionador **Custom Event** para `page_view` e a tag de PageView.
-3. Variáveis de camada de dados para `cta_name`, `cta_location`, `button_text`, `event_id`, `value` e `currency`.
+3. Variáveis de camada de dados para `cta_name`, `cta_location`, `cta_text`, `destination_url`, `event_id`, `value` e `currency`.
 
 Enquanto o container do GTM não está autenticado, o Pixel configurado no site é `2285516122199897` via carga direta (`metaPixelDirect: true`). Assim que o GTM for publicado, altere `metaPixelDirect` para `false` e deixe o Pixel somente na tag do GTM para evitar eventos duplicados.
 

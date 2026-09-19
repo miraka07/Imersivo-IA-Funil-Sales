@@ -33,7 +33,13 @@
   }
 
   function push(eventName, properties) {
-    dataLayer.push(Object.assign({ event: eventName }, properties || {}));
+    dataLayer.push(Object.assign({
+      event: eventName,
+      event_timestamp: Math.round(Date.now() / 1000),
+      page_title: document.title,
+      page_url: window.location.href,
+      page_type: 'sales_landing'
+    }, properties || {}));
   }
 
   function loadGtm() {
@@ -115,8 +121,17 @@
       page_title: document.title,
       page_location: window.location.href
     }, campaignContext());
-    push('cta_clicked', properties);
-    push('checkout_started', Object.assign({}, properties, { value: 89.90, currency: 'BRL', content_name: 'Método CODEBEN' }));
+    push('cta_click', Object.assign({}, properties, {
+      cta_text: label,
+      destination_url: href
+    }));
+    push('initiate_checkout', Object.assign({}, properties, {
+      cta_text: label,
+      destination_url: href,
+      value: 89.90,
+      currency: 'BRL',
+      content_name: 'Método CODEBEN'
+    }));
     if (config.metaPixelDirect === true && window.fbq) {
       window.fbq('track', 'InitiateCheckout', { value: 89.90, currency: 'BRL', content_name: 'Método CODEBEN' }, { eventID: eventIdValue });
     }
@@ -128,6 +143,50 @@
     });
   }
 
+  function setupSectionViews() {
+    if (!('IntersectionObserver' in window)) return;
+    var sections = [
+      { selector: 'section.framer-p1ldqa, section.framer-18ndqqk', name: 'hero' },
+      { selector: 'section.framer-w6lvb9', name: 'projects' },
+      { selector: '.codeben-process-block', name: 'process' },
+      { selector: '.codeben-offer-section', name: 'pricing' },
+      { selector: 'section.framer-50ocvf', name: 'cta_final' }
+    ];
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var sectionName = entry.target.dataset.codebenTrackingSection;
+        if (!sectionName || entry.target.dataset.codebenTrackedView) return;
+        entry.target.dataset.codebenTrackedView = 'true';
+        push('section_view', { section_name: sectionName });
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.35 });
+    sections.forEach(function (item) {
+      document.querySelectorAll(item.selector).forEach(function (element) {
+        element.dataset.codebenTrackingSection = item.name;
+        observer.observe(element);
+      });
+    });
+  }
+
+  function setupScrollDepth() {
+    var thresholds = [25, 50, 75, 90, 100];
+    var sent = {};
+    var update = function () {
+      var height = document.documentElement.scrollHeight - window.innerHeight;
+      var depth = height > 0 ? Math.round((window.scrollY / height) * 100) : 100;
+      thresholds.forEach(function (threshold) {
+        if (depth < threshold || sent[threshold]) return;
+        sent[threshold] = true;
+        push('scroll_depth', { scroll_percentage: threshold });
+      });
+      if (thresholds.every(function (threshold) { return sent[threshold]; })) window.removeEventListener('scroll', update);
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+
   function init() {
     push('page_view', Object.assign({
       page_title: document.title,
@@ -136,6 +195,8 @@
       content_group: 'codeben_landing_page'
     }, campaignContext()));
     loadMetaPixel();
+    setupSectionViews();
+    setupScrollDepth();
     document.addEventListener('click', function (event) {
       var anchor = event.target && event.target.closest ? event.target.closest('a') : null;
       if (anchor) trackCta(anchor);
