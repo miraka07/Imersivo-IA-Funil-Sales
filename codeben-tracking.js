@@ -98,8 +98,16 @@
 
     var anchors = Array.prototype.slice.call(document.querySelectorAll('a.codeben-cta, a[href*="pay.cakto.com.br"]'));
     var index = Math.max(0, anchors.indexOf(anchor));
-    var label = clean(anchor.textContent || anchor.getAttribute('aria-label')).replace(/\s+—\s+checkout CODEBEN$/i, '');
-    var ctaName = snake(label || 'cta');
+    // Framer CTA buttons contain rolling-text spans and serialized style text.
+    // Prefer the accessible label so the data layer receives the human label,
+    // rather than the button's internal markup.
+    var rawLabel = anchor.getAttribute('aria-label') ||
+      anchor.getAttribute('data-cta-label') ||
+      anchor.getAttribute('data-cta-name') ||
+      anchor.textContent || '';
+    var label = clean(rawLabel).replace(/\s+—\s+checkout CODEBEN$/i, '');
+    var fallbackNames = ['subir_o_nivel', 'quero_esse_metodo', 'entrar_agora'];
+    var ctaName = snake(label || fallbackNames[index] || 'cta');
     var eventIdValue = eventId();
     var legacyLabels = { acessar_workflow: 'quero_esse_metodo', comecar: 'subir_o_nivel', entrar_na_codeben: 'entrar_agora', primeiro_resultado: 'subir_o_nivel' };
     if (legacyLabels[ctaName]) ctaName = legacyLabels[ctaName];
