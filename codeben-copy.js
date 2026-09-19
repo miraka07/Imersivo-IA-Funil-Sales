@@ -144,6 +144,39 @@
     return video;
   }
 
+  // Mobile keeps the first visual responsive and defers every lower-page video
+  // until it is close to the viewport. This avoids downloading the whole gallery
+  // during the critical first render on slower connections.
+  function setupMobileVideoLoading() {
+    if (!window.matchMedia || !window.matchMedia('(max-width: 809px)').matches) return;
+    var videos = Array.prototype.slice.call(document.querySelectorAll('video'));
+    var observer = 'IntersectionObserver' in window ? new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var video = entry.target;
+        observer.unobserve(video);
+        var src = video.dataset.codebenLazySrc;
+        if (src && !video.getAttribute('src')) {
+          video.setAttribute('src', src);
+          video.load();
+        }
+        video.autoplay = true;
+        var playback = video.play();
+        if (playback && playback.catch) playback.catch(function () {});
+      });
+    }, { rootMargin: '500px 0px' }) : null;
+    videos.forEach(function (video, index) {
+      video.preload = index === 0 ? 'metadata' : 'none';
+      if (index === 0 || !video.getAttribute('src')) return;
+      video.dataset.codebenLazySrc = video.getAttribute('src');
+      video.dataset.codebenMobileDeferred = 'true';
+      video.removeAttribute('src');
+      video.autoplay = false;
+      video.load();
+      if (observer) observer.observe(video);
+    });
+  }
+
   function replaceVideoSlot(key, src, label) {
     var slot = document.querySelector('[data-codeben-video-slot="' + key + '"]');
     if (!slot) return;
@@ -186,7 +219,7 @@
     };
     document.querySelectorAll('video[data-codeben-video-key]').forEach(function (video) {
       var source = mediaSources[video.dataset.codebenVideoKey];
-      if (source && video.getAttribute('src') !== source) {
+      if (source && !video.dataset.codebenMobileDeferred && video.getAttribute('src') !== source) {
         video.src = source;
         video.load();
       }
@@ -593,12 +626,14 @@
         if (document.querySelector('[data-codeben-extension-section]')) return;
         applyCopy();
         hydrateVideoAssets();
+        setupMobileVideoLoading();
         setupHeadlineMotion();
       });
       hydrateObserver.observe(main, { childList: true, subtree: true });
     }
     applyCopy();
     hydrateVideoAssets();
+    setupMobileVideoLoading();
     document.body.classList.add('codeben-ready');
     window.requestAnimationFrame(setupHeadlineMotion);
   }

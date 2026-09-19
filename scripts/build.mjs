@@ -22,6 +22,10 @@ cpSync(join(root, 'codeben-copy.js'), join(output, 'js', 'codeben-copy.js'));
 cpSync(join(root, 'sitecloner-runtime.js'), join(output, 'js', 'sitecloner-runtime.js'));
 
 let html = readFileSync(join(root, 'index.html'), 'utf8');
+// The captured editor bootstrap and analytics are not part of the CODEBEN page;
+// removing them keeps production mobile loads independent of Framer tooling.
+html = html.replace(/<script>try\{if\(localStorage\.getItem\("__framer_force_showing_editorbar_since"\)[\s\S]*?<\/script>/, '');
+html = html.replace(/<script async="" src="\/__sitecloner_resource__\/https\/events\.framer\.com\/[^>]+><\/script>/, '');
 html = html.replaceAll('href="/codeben-copy.css"', 'href="/css/codeben-copy.css"');
 html = html.replaceAll('src="/codeben-copy.js"', 'src="/js/codeben-copy.js"');
 html = html.replaceAll('src="/sitecloner-runtime.js"', 'src="/js/sitecloner-runtime.js"');
