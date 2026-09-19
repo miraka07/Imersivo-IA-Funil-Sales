@@ -241,6 +241,13 @@ a[href^="https://pay.cakto.com.br/32iz4ye_1114873"]:focus-visible p[class*="roll
   .codeben-results-section > .codeben-video-media{transition:none!important;scale:1!important}
 }
 
+/* Keep the first mobile viewport visible while the non-critical Framer runtime
+   is deferred. Lower sections retain their original reveal behavior. */
+@media (max-width:809px){
+  section.framer-18ndqqk [data-framer-appear-id]{opacity:1!important;transform:none!important}
+  section.codeben-mobile-hero [data-framer-appear-id]{opacity:1!important;transform:none!important}
+}
+
 
 
 
