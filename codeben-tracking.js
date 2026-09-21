@@ -56,6 +56,25 @@
     });
   }
 
+  function keepCheckoutLinksDecorated() {
+    if (!('MutationObserver' in window)) return;
+    var pending = false;
+    var observer = new MutationObserver(function () {
+      if (pending) return;
+      pending = true;
+      window.requestAnimationFrame(function () {
+        pending = false;
+        decorateCheckoutLinks();
+      });
+    });
+    observer.observe(document.documentElement, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeFilter: ['href']
+    });
+  }
+
   function eventId() {
     if (window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID();
     return 'cb_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2);
@@ -238,6 +257,7 @@
     }, campaignContext()));
     loadMetaPixel();
     decorateCheckoutLinks();
+    keepCheckoutLinksDecorated();
     setupSectionViews();
     setupScrollDepth();
     document.addEventListener('click', function (event) {

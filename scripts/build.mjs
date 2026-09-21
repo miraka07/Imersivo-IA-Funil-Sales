@@ -45,8 +45,13 @@ const copyScript = '<script src="/js/codeben-copy.js" defer></script>';
 const copyLoader = `<script>(function(){var src='/js/codeben-copy.js',loaded=false;function load(){if(loaded)return;loaded=true;var s=document.createElement('script');s.defer=true;s.src=src;document.body.appendChild(s)}if(window.matchMedia&&window.matchMedia('(max-width: 809px)').matches){['pointerdown','touchstart','scroll','keydown'].forEach(function(e){window.addEventListener(e,load,{once:true,passive:true})});setTimeout(load,15000)}else load()})();</script>`;
 if (!html.includes(copyScript)) throw new Error('CODEBEN copy script not found in captured HTML');
 html = html.replace(copyScript, copyLoader);
-const trackingScript = `<script src="/js/${trackingFile}" defer></script>`;
-if (!html.includes(trackingScript)) throw new Error('CODEBEN tracking script not found in captured HTML');
+// Run the small tracking bootstrap synchronously at the end of <body>. This
+// installs the capture-phase CTA handler before the deferred Framer runtime
+// hydrates and replaces links, so attribution is never dependent on UI timing.
+const deferredTrackingScript = `<script src="/js/${trackingFile}" defer></script>`;
+const trackingScript = `<script src="/js/${trackingFile}"></script>`;
+if (!html.includes(deferredTrackingScript)) throw new Error('CODEBEN tracking script not found in captured HTML');
+html = html.replace(deferredTrackingScript, trackingScript);
 for (const path of ['/css/codeben-copy.css', '/js/codeben-copy.js', `/js/${trackingFile}`, '/js/sitecloner-runtime.js']) {
   if (!html.includes(path)) throw new Error(`Built HTML does not reference ${path}`);
 }
