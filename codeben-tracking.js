@@ -71,6 +71,10 @@
     }, properties || {}));
   }
 
+  function ensureGa4Queue() {
+    window.gtag = window.gtag || function () { dataLayer.push(arguments); };
+  }
+
   function loadGtm() {
     var gtmId = clean(config.gtmId);
     if (!gtmId || document.querySelector('script[data-codeben-gtm], script[src*="googletagmanager.com/gtm.js"]')) return;
@@ -158,6 +162,7 @@
       page_title: document.title,
       page_location: window.location.href
     }, campaignContext());
+    ensureGa4Queue();
     push('cta_click', Object.assign({}, properties, {
       cta_text: label,
       destination_url: href
