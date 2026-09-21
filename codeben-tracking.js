@@ -27,6 +27,35 @@
     return context;
   }
 
+  function decorateCheckoutUrl(href) {
+    var url;
+    try {
+      url = new URL(href, window.location.href);
+    } catch (error) {
+      return href;
+    }
+    if (url.hostname !== checkoutHost) return href;
+
+    var campaign = campaignContext();
+    campaignKeys.forEach(function (key) {
+      if (campaign[key] && !url.searchParams.has(key)) url.searchParams.set(key, campaign[key]);
+    });
+    return url.href;
+  }
+
+  function decorateCheckoutLink(anchor) {
+    var href = anchor.getAttribute('href') || '';
+    var decoratedHref = decorateCheckoutUrl(href);
+    if (decoratedHref && decoratedHref !== href) anchor.setAttribute('href', decoratedHref);
+    return decoratedHref || href;
+  }
+
+  function decorateCheckoutLinks() {
+    document.querySelectorAll('a[href*="pay.cakto.com.br"]').forEach(function (anchor) {
+      decorateCheckoutLink(anchor);
+    });
+  }
+
   function eventId() {
     if (window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID();
     return 'cb_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2);
@@ -91,7 +120,7 @@
   }
 
   function trackCta(anchor) {
-    var href = anchor.getAttribute('href') || '';
+    var href = decorateCheckoutLink(anchor);
     var isCheckout = false;
     try { isCheckout = new URL(href, window.location.href).hostname === checkoutHost; } catch (error) {}
     if (!isCheckout && !anchor.classList.contains('codeben-cta')) return;
@@ -203,6 +232,7 @@
       content_group: 'codeben_landing_page'
     }, campaignContext()));
     loadMetaPixel();
+    decorateCheckoutLinks();
     setupSectionViews();
     setupScrollDepth();
     document.addEventListener('click', function (event) {
