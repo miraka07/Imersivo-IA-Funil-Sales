@@ -35,7 +35,9 @@ html = html.replace(/<script async="" src="\/__sitecloner_resource__\/https\/eve
 html = html.replace(/<link rel="modulepreload"[^>]+>/g, '');
 const mainBundle = html.match(/<script type="module" async="" data-framer-bundle="main"[^>]+src="([^"]+)"[^>]*><\/script>/);
 if (!mainBundle) throw new Error('Framer main bundle not found in captured HTML');
-const mainLoader = `<script>(function(){var src=${JSON.stringify(mainBundle[1])},s=document.createElement('script');s.type='module';s.async=true;s.dataset.framerBundle='main';s.src=src;document.head.appendChild(s)})();</script>`;
+// The captured Framer runtime rehydrates the static page and causes visible
+// second renders and CTA races. Production serves the already composed HTML.
+const mainLoader = '';
 html = html.replace(mainBundle[0], mainLoader);
 html = html.replaceAll('href="/codeben-copy.css"', 'href="/css/codeben-copy.css"');
 html = html.replaceAll('src="/codeben-copy.js"', 'src="/js/codeben-copy.js"');
@@ -45,7 +47,7 @@ html = html.replace('<script src="/js/sitecloner-runtime.js"></script>', '<scrip
 const copyScript = '<script src="/js/codeben-copy.js" defer></script>';
 // CTA links are conversion-critical. Load their enhancer immediately on every
 // viewport so a first mobile touch cannot race the checkout URL assignment.
-const copyLoader = `<script>(function(){var s=document.createElement('script');s.defer=true;s.src='/js/codeben-copy.js';document.body.appendChild(s)})();</script>`;
+const copyLoader = '';
 if (!html.includes(copyScript)) throw new Error('CODEBEN copy script not found in captured HTML');
 html = html.replace(copyScript, copyLoader);
 // Run the small tracking bootstrap synchronously at the end of <body>. This
@@ -55,7 +57,7 @@ const deferredTrackingScript = `<script src="/js/${trackingFile}" defer></script
 const trackingScript = `<script src="/js/${trackingFile}"></script>`;
 if (!html.includes(deferredTrackingScript)) throw new Error('CODEBEN tracking script not found in captured HTML');
 html = html.replace(deferredTrackingScript, trackingScript);
-for (const path of ['/css/codeben-copy.css', '/js/codeben-copy.js', `/js/${trackingFile}`, '/js/sitecloner-runtime.js']) {
+for (const path of ['/css/codeben-copy.css', `/js/${trackingFile}`, '/js/sitecloner-runtime.js']) {
   if (!html.includes(path)) throw new Error(`Built HTML does not reference ${path}`);
 }
 writeFileSync(join(output, 'index.html'), html);
