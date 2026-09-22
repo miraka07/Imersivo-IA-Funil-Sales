@@ -514,8 +514,7 @@
       anchor.setAttribute('href', destination);
       event.preventDefault();
       event.stopImmediatePropagation();
-      var popup = window.open(destination, '_blank', 'noopener,noreferrer');
-      if (!popup) window.location.assign(destination);
+      window.location.assign(destination);
     }, true);
   }
 

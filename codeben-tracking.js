@@ -274,8 +274,7 @@
       event.preventDefault();
       event.stopImmediatePropagation();
       if (anchor.tagName === 'A') anchor.setAttribute('href', checkoutUrl);
-      var popup = window.open(checkoutUrl, '_blank', 'noopener,noreferrer');
-      if (!popup) window.location.assign(checkoutUrl);
+      window.location.assign(checkoutUrl);
     }, true);
     scheduleGtm();
   }
