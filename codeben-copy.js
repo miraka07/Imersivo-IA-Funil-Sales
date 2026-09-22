@@ -501,6 +501,16 @@
       });
     };
     scan();
+    document.addEventListener('click', function (event) {
+      var anchor = event.target && event.target.closest ? event.target.closest('a.codeben-cta') : null;
+      if (!anchor) return;
+      var destination = anchor.getAttribute('href');
+      if (!destination || destination.indexOf(CHECKOUT) !== 0) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      var popup = window.open(destination, '_blank', 'noopener,noreferrer');
+      if (!popup) window.location.assign(destination);
+    }, true);
     if (!window.MutationObserver || !document.body) return;
     var queued = false;
     var observer = new MutationObserver(function () {
