@@ -40,6 +40,14 @@ html = html.replace(
   'class="codeben-results-section codeben-project-video-card codeben-project-video-frame"',
   'class="codeben-results-section"',
 );
+html = html.replace(
+  'class="codeben-extension-section codeben-project-video-frame"',
+  'class="codeben-extension-section"',
+);
+html = html.replace(
+  'class="framer-1qh7qe0 codeben-project-video-card codeben-project-video-wrap"',
+  'class="framer-1qh7qe0 codeben-system-section"',
+);
 // The captured editor bootstrap and analytics are not part of the CODEBEN page;
 // removing them keeps production mobile loads independent of Framer tooling.
 html = html.replace(/<script>try\{if\(localStorage\.getItem\("__framer_force_showing_editorbar_since"\)[\s\S]*?<\/script>/, '');
@@ -74,8 +82,11 @@ html = html.replace('</body>', videoBootstrap + '</body>');
 for (const path of ['/css/codeben-copy.css', `/js/${trackingFile}`, '/js/sitecloner-runtime.js']) {
   if (!html.includes(path)) throw new Error(`Built HTML does not reference ${path}`);
 }
-if (/data-codeben-(?:process-block|results-section)="true"[^>]*codeben-project-video-frame/.test(html)) {
+if (/data-codeben-(?:process-block|results-section|extension-section)="true"[^>]*codeben-project-video-frame/.test(html)) {
   throw new Error('Content section still inherits the fixed-ratio video frame class');
+}
+if (/framer-1qh7qe0[^\"]*codeben-project-video-(?:card|wrap)/.test(html)) {
+  throw new Error('System section still inherits a constrained project video layout');
 }
 writeFileSync(join(output, 'index.html'), html);
 console.log(`Built ${output} with ${manifest.resources.length} captured assets.`);

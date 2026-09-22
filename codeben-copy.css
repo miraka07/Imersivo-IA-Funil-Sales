@@ -273,7 +273,8 @@ a[href^="https://pay.cakto.com.br/32iz4ye_1128231"]:focus-visible p[class*="roll
    as a guard even though the build removes the captured media-frame class. */
 @media (max-width:809px){
   [data-codeben-process-block="true"],
-  [data-codeben-results-section="true"]{
+  [data-codeben-results-section="true"],
+  [data-codeben-extension-section="true"]{
     position:relative!important;
     display:block!important;
     width:100%!important;
@@ -310,6 +311,114 @@ a[href^="https://pay.cakto.com.br/32iz4ye_1128231"]:focus-visible p[class*="roll
     position:relative!important;
     z-index:1!important;
     clear:both!important;
+  }
+}
+
+/* Static mobile composition. Framer's reveal runtime is intentionally absent,
+   so intended content cannot keep its server-side opacity or reserve an empty
+   animated slot. */
+@media (max-width:809px){
+  .codeben-system-section{
+    display:block!important;
+    width:100%!important;
+    max-width:none!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    aspect-ratio:auto!important;
+    padding:0 20px 64px!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+  }
+  .codeben-system-section > .framer-1hk08fl,
+  .codeben-system-section > .framer-1hk08fl [style*="opacity:0"],
+  .codeben-two-modules > div:first-child,
+  .codeben-two-modules > div:first-child [style*="opacity:0"]{
+    opacity:1!important;
+    transform:none!important;
+    will-change:auto!important;
+  }
+  .codeben-system-section > .framer-1hk08fl{
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    margin:56px auto 0!important;
+    overflow:visible!important;
+  }
+  .codeben-modules-heading-wrap,
+  .codeben-two-modules,
+  [data-codeben-modules-close]{
+    width:100%!important;
+    max-width:760px!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    margin-inline:auto!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+  }
+  .codeben-two-modules{margin-top:28px!important}
+  .codeben-modules-title,
+  .codeben-process-block h2,
+  .codeben-results-section h2,
+  .codeben-extension-section h3{
+    font-size:clamp(30px,8.9vw,34px)!important;
+    line-height:1.08!important;
+    letter-spacing:-.045em!important;
+  }
+  .codeben-process-block,
+  .codeben-results-section,
+  .codeben-extension-section,
+  .codeben-module-detail,
+  [data-codeben-modules-intro]{
+    font-size:16px!important;
+    line-height:1.48!important;
+  }
+  .codeben-process-block{
+    width:100%!important;
+    max-width:720px!important;
+    margin:0 auto!important;
+    padding:0!important;
+  }
+  .codeben-extension-section{
+    width:100%!important;
+    max-width:720px!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    aspect-ratio:auto!important;
+    margin:56px auto 0!important;
+    padding:28px 20px!important;
+    overflow:visible!important;
+  }
+  .codeben-results-section{
+    width:100%!important;
+    max-width:720px!important;
+    margin:56px auto 0!important;
+    padding:0!important;
+    box-sizing:border-box!important;
+  }
+  .codeben-process-block > .codeben-video-media,
+  .codeben-extension-section > .codeben-video-media,
+  .codeben-results-section > .codeben-video-media,
+  .codeben-results-section > .codeben-template-video-frame,
+  .codeben-results-section > .codeben-gsap-video-frame,
+  .codeben-results-section > .codeben-scenes-video-frame{
+    display:block!important;
+    width:100%!important;
+    max-width:320px!important;
+    height:auto!important;
+    aspect-ratio:16/9!important;
+    margin:24px auto 0!important;
+    border-radius:12px!important;
+    box-sizing:border-box!important;
+  }
+  .codeben-results-section > .codeben-template-video-frame > video,
+  .codeben-results-section > .codeben-gsap-video-frame > video,
+  .codeben-results-section > .codeben-scenes-video-frame > video{
+    width:100%!important;
+    height:100%!important;
+    margin:0!important;
   }
 }
 
