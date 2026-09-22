@@ -76,6 +76,25 @@ if (!html.includes('codeben-final-cta')) {
     `$1${finalCta}`,
   );
 }
+// Eight large videos used to start downloading together on cellular. Keep a
+// real frame and native controls in the HTML; playback is enhanced near view.
+let preparedVideos = 0;
+html = html.replace(/<video\b[^>]*>/g, (tag) => {
+  const file = tag.match(/src="\/assets\/media\/([a-z0-9-]+)\.mp4"/);
+  if (!file) return tag;
+  const poster = `/assets/posters/${file[1]}.jpg`;
+  if (!existsSync(join(root, poster.slice(1)))) throw new Error(`Missing video poster: ${poster}`);
+  const mediaHash = createHash('sha256')
+    .update(readFileSync(join(root, 'assets', 'media', `${file[1]}.mp4`)))
+    .digest('hex').slice(0, 12);
+  preparedVideos++;
+  return tag
+    .replace(file[0], `${file[0].slice(0, -1)}?v=${mediaHash}"`)
+    .replace(/\sautoplay(?:="")?/g, '')
+    .replace(/\spreload="[^"]*"/g, '')
+    .replace(/>$/, ` preload="none" poster="${poster}" controls>`);
+});
+if (preparedVideos !== 8) throw new Error(`Expected 8 videos to prepare, found ${preparedVideos}`);
 // These are content sections, not 16:9 media frames. The captured markup
 // accidentally shared the frame class with them, which forced a fixed mobile
 // aspect ratio and clipped/overlaid their copy.
@@ -124,7 +143,7 @@ const deferredTrackingScript = `<script src="/js/${trackingFile}" defer></script
 const trackingScript = `<script src="/js/${trackingFile}"></script>`;
 if (!html.includes(deferredTrackingScript)) throw new Error('CODEBEN tracking script not found in captured HTML');
 html = html.replace(deferredTrackingScript, trackingScript);
-const videoBootstrap = `<script>(function(){function play(){document.querySelectorAll('video').forEach(function(v){v.muted=true;v.defaultMuted=true;v.autoplay=true;v.setAttribute('muted','');v.setAttribute('playsinline','');var p=v.play();if(p&&p.catch)p.catch(function(){})})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',play,{once:true});else play()})();</script>`;
+const videoBootstrap = `<script>(function(){function ready(){var videos=document.querySelectorAll('video');function play(v){v.muted=true;v.defaultMuted=true;v.setAttribute('muted','');v.setAttribute('playsinline','');var p=v.play();if(p&&p.then)p.then(function(){v.controls=false}).catch(function(){v.controls=true})}if(!('IntersectionObserver'in window)){videos.forEach(play);return}var observer=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting)play(entry.target);else entry.target.pause()})},{rootMargin:'300px 0px'});videos.forEach(function(v){observer.observe(v)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ready,{once:true});else ready()})();</script>`;
 html = html.replace('</body>', videoBootstrap + '</body>');
 for (const path of ['/css/codeben-copy.css', `/js/${trackingFile}`, '/js/sitecloner-runtime.js']) {
   if (!html.includes(path)) throw new Error(`Built HTML does not reference ${path}`);

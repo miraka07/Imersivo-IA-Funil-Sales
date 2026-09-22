@@ -46,7 +46,8 @@ const window = {
   location: {
     href: `https://www.codebn.com.br/?${search}`,
     search: `?${search}`,
-    pathname: '/'
+    pathname: '/',
+    assign(value) { this.lastAssigned = value; }
   },
   crypto: { randomUUID: () => 'event-test-1' },
   innerHeight: 1000,
@@ -91,5 +92,16 @@ assert.equal(checkout.event_id, cta.event_id);
 assert.equal(checkout.value, 89.90);
 assert.equal(checkout.currency, 'BRL');
 assert.equal(typeof window.gtag, 'function');
+
+listeners['window:click']({
+  target: { closest: () => anchors[0] },
+  preventDefault() {},
+  stopImmediatePropagation() {}
+});
+const navigatedCheckout = new URL(window.location.lastAssigned);
+for (const [key, value] of Object.entries(campaign)) {
+  assert.equal(navigatedCheckout.searchParams.get(key), value, `lost ${key} during checkout navigation`);
+}
+assert.equal(anchors[0].getAttribute('href'), window.location.lastAssigned);
 
 console.log('Tracking smoke test passed: attribution, CTA and checkout events are consistent.');

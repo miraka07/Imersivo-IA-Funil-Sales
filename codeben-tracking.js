@@ -273,8 +273,10 @@
       if (!anchor.classList.contains('codeben-cta') && href.indexOf(checkoutHost) === -1 && !/SUBIR O NÍVEL|QUERO ESSE MÉTODO|ENTRAR AGORA|ACESSAR WORKFLOW/i.test(label)) return;
       event.preventDefault();
       event.stopImmediatePropagation();
-      if (anchor.tagName === 'A') anchor.setAttribute('href', checkoutUrl);
-      window.location.assign(checkoutUrl);
+      // Navigate once, in the same tab, using the attributed URL that was
+      // already recorded by trackCta. Resetting href here dropped all UTMs.
+      var destination = anchor.tagName === 'A' ? decorateCheckoutLink(anchor) : decorateCheckoutUrl(checkoutUrl);
+      window.location.assign(destination);
     }, true);
     scheduleGtm();
   }

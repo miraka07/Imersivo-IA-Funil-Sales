@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "test": "node scripts/test-tracking.mjs"
+    "test": "npm run build && node scripts/test-tracking.mjs && node scripts/test-build.mjs"
   },
   "engines": {
     "node": ">=20"
