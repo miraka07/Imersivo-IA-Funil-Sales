@@ -82,6 +82,9 @@ Essas evidências são do build local final; não equivalem a validação em tod
 | Browser sem JavaScript em 390 px | PASSOU: headline, oferta, CTAs e posters/controles presentes |
 | Rede limitada a ~1,6 Mbps e 150 ms de latência | antes: nenhum quadro pronto após ~28 s; depois: vídeo do processo reproduzindo ~3 s após aproximar a seção |
 | Recursos locais do build | nenhum request local falhou nos viewports testados |
+| Produção `www.codebn.com.br` após push `89770e8` | HTTP 200; 9 variantes de CTA, 8 vídeos com poster/hash, sem erro de página |
+| CTA final em produção | mesma guia, checkout `1128231` com UTMs preservadas |
+| Mídia em produção | MP4 e poster HTTP 200; MP4 aceita Range com HTTP 206 |
 | Checkout público Cakto | HTTP 200, produto e preço corretos; pagamento não testado |
 | GTM/GA4 | GTM carregou; coleta GA4 `page_view` observada; CTA em `dataLayer` |
 
@@ -133,7 +136,7 @@ Não existe implementação de envio neste repositório. Criação, aceitação 
 
 | Área | Status | Evidência/limite |
 | --- | --- | --- |
-| Build e landing local | **PASSOU** | build, DOM, browser, cliques e recursos testados |
+| Build e landing publicada | **PASSOU** | build, DOM, browser, cliques e recursos testados; produção HTTP 200 |
 | CTAs e UTMs | **PASSOU** | 8 cliques finais interceptados, uma guia, parâmetros preservados |
 | Vídeo mobile | **PASSOU COM RESSALVA** | Chromium e rede limitada; iPhone físico pendente |
 | GA4/GTM | **PASSOU COM RESSALVA** | script e `page_view`; conversão final no painel não verificada |
