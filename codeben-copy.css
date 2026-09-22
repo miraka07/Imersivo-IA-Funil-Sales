@@ -244,6 +244,27 @@ a[href^="https://pay.cakto.com.br/32iz4ye_1128231"]:focus-visible p[class*="roll
 /* Keep the first mobile viewport visible while the non-critical Framer runtime
    is deferred. Lower sections retain their original reveal behavior. */
 @media (max-width:809px){
+  /* Keep process copy fully visible on narrow screens. */
+  section.framer-w6lvb9,
+  section.framer-1qh7qe0,
+  section.framer-w6lvb9 .framer-text,
+  section.framer-1qh7qe0 .framer-text{
+    height:auto!important;
+    max-height:none!important;
+    min-height:0!important;
+    overflow:visible!important;
+  }
+  section.framer-w6lvb9 h1,
+  section.framer-w6lvb9 h2,
+  section.framer-w6lvb9 h3,
+  section.framer-1qh7qe0 h1,
+  section.framer-1qh7qe0 h2,
+  section.framer-1qh7qe0 h3{
+    height:auto!important;
+    max-height:none!important;
+    overflow:visible!important;
+    white-space:normal!important;
+  }
   section.framer-18ndqqk [data-framer-appear-id]{opacity:1!important;transform:none!important}
   section.codeben-mobile-hero [data-framer-appear-id]{opacity:1!important;transform:none!important}
 }

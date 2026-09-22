@@ -57,6 +57,8 @@ const deferredTrackingScript = `<script src="/js/${trackingFile}" defer></script
 const trackingScript = `<script src="/js/${trackingFile}"></script>`;
 if (!html.includes(deferredTrackingScript)) throw new Error('CODEBEN tracking script not found in captured HTML');
 html = html.replace(deferredTrackingScript, trackingScript);
+const videoBootstrap = `<script>(function(){function play(){document.querySelectorAll('video').forEach(function(v){v.muted=true;v.defaultMuted=true;v.autoplay=true;v.setAttribute('muted','');v.setAttribute('playsinline','');var p=v.play();if(p&&p.catch)p.catch(function(){})})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',play,{once:true});else play()})();</script>`;
+html = html.replace('</body>', videoBootstrap + '</body>');
 for (const path of ['/css/codeben-copy.css', `/js/${trackingFile}`, '/js/sitecloner-runtime.js']) {
   if (!html.includes(path)) throw new Error(`Built HTML does not reference ${path}`);
 }
