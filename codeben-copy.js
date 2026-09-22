@@ -503,9 +503,15 @@
     scan();
     document.addEventListener('click', function (event) {
       var anchor = event.target && event.target.closest ? event.target.closest('a.codeben-cta') : null;
+      if (!anchor && event.target && event.target.closest) {
+        var candidate = event.target.closest('a');
+        var candidateLabel = candidate && (candidate.textContent || '').replace(/\s+/g, ' ').trim();
+        if (candidate && /SUBIR O NÍVEL|QUERO ESSE MÉTODO|ENTRAR AGORA|ACESSAR WORKFLOW/i.test(candidateLabel)) anchor = candidate;
+      }
       if (!anchor) return;
-      var destination = anchor.getAttribute('href');
-      if (!destination || destination.indexOf(CHECKOUT) !== 0) return;
+      var destination = CHECKOUT;
+      if (anchor.getAttribute('href') && anchor.getAttribute('href').indexOf('pay.cakto.com.br') === -1 && !anchor.classList.contains('codeben-cta')) return;
+      anchor.setAttribute('href', destination);
       event.preventDefault();
       event.stopImmediatePropagation();
       var popup = window.open(destination, '_blank', 'noopener,noreferrer');
