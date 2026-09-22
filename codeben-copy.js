@@ -511,17 +511,6 @@
       var popup = window.open(destination, '_blank', 'noopener,noreferrer');
       if (!popup) window.location.assign(destination);
     }, true);
-    if (!window.MutationObserver || !document.body) return;
-    var queued = false;
-    var observer = new MutationObserver(function () {
-      if (queued) return;
-      queued = true;
-      window.requestAnimationFrame(function () {
-        queued = false;
-        scan();
-      });
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
   }
 
   function applyCopy() {
