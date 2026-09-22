@@ -644,18 +644,6 @@
 
   function start() {
     var main = document.querySelector('#main');
-    if (main && window.MutationObserver) {
-      var hydrateObserver = new MutationObserver(function () {
-        if (!main.isConnected) return;
-        removeLegacyImages();
-        if (document.querySelector('[data-codeben-extension-section]')) return;
-        applyCopy();
-        hydrateVideoAssets();
-        setupMobileVideoLoading();
-        setupHeadlineMotion();
-      });
-      hydrateObserver.observe(main, { childList: true, subtree: true });
-    }
     applyCopy();
     hydrateVideoAssets();
     setupMobileVideoLoading();
@@ -663,6 +651,12 @@
     window.requestAnimationFrame(setupHeadlineMotion);
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
-  else start();
+  function startAfterHydration() {
+    // Framer owns #main during hydration. Mutating it before React finishes
+    // causes removeChild errors and leaves the page unresponsive.
+    var delay = window.matchMedia && window.matchMedia('(max-width: 809px)').matches ? 16000 : 3500;
+    window.setTimeout(start, delay);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startAfterHydration, { once: true });
+  else startAfterHydration();
 }());
