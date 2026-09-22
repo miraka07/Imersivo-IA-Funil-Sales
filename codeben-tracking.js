@@ -7,6 +7,7 @@
   var config = window.CODEBEN_TRACKING_CONFIG || {};
   var dataLayer = window.dataLayer = window.dataLayer || [];
   var checkoutHost = 'pay.cakto.com.br';
+  var checkoutUrl = 'https://pay.cakto.com.br/32iz4ye_1128231';
   var campaignKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'gclid', 'fbclid'];
 
   function clean(value) {
@@ -263,6 +264,18 @@
     document.addEventListener('click', function (event) {
       var anchor = event.target && event.target.closest ? event.target.closest('a') : null;
       if (anchor) trackCta(anchor);
+    }, true);
+    window.addEventListener('click', function (event) {
+      var anchor = event.target && event.target.closest ? event.target.closest('a') : null;
+      if (!anchor) return;
+      var label = clean(anchor.textContent || '');
+      var href = anchor.getAttribute('href') || '';
+      if (!anchor.classList.contains('codeben-cta') && href.indexOf(checkoutHost) === -1 && !/SUBIR O NÍVEL|QUERO ESSE MÉTODO|ENTRAR AGORA|ACESSAR WORKFLOW/i.test(label)) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      anchor.setAttribute('href', checkoutUrl);
+      var popup = window.open(checkoutUrl, '_blank', 'noopener,noreferrer');
+      if (!popup) window.location.assign(checkoutUrl);
     }, true);
     scheduleGtm();
   }
