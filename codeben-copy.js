@@ -460,6 +460,7 @@
   }
 
   function setCta(anchor, ctaLabel) {
+    if (!anchor || (anchor.classList.contains('codeben-cta') && anchor.getAttribute('href') === CHECKOUT && anchor.dataset.codebenCtaLabel === ctaLabel)) return;
     anchor.href = CHECKOUT;
     anchor.target = '_blank';
     anchor.rel = 'noopener noreferrer';
@@ -483,6 +484,24 @@
       anchor.textContent = ctaLabel;
     }
     anchor.classList.add('codeben-cta');
+    anchor.dataset.codebenCtaLabel = ctaLabel;
+  }
+
+  function setupCtaLinks() {
+    var scan = function () {
+      document.querySelectorAll('a').forEach(function (anchor) {
+        var label = (anchor.textContent || '').replace(/\s+/g, ' ').trim();
+        if (!(anchor.matches('a[href*="cakto.com"]') || /ACESSAR WORKFLOW|COMEÇAR|ENTRAR NA CODEBEN|PRIMEIRO RESULTADO|SUBIR O NÍVEL|QUERO ESSE MÉTODO|ENTRAR AGORA/i.test(label) || anchor.classList.contains('codeben-cta'))) return;
+        var section = anchor.closest('section');
+        var ctaLabel = section && section.classList.contains('framer-w6lvb9') ? CTA_LABELS[1] :
+          section && section.classList.contains('framer-50ocvf') ? CTA_LABELS[2] : CTA_LABELS[0];
+        setCta(anchor, ctaLabel);
+      });
+    };
+    scan();
+    if (!window.MutationObserver || !document.body) return;
+    var observer = new MutationObserver(scan);
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['href'] });
   }
 
   function applyCopy() {
@@ -581,16 +600,7 @@
     addExtensionNote();
     setupTwoModules();
     applyEditorialCopy();
-
-    document.querySelectorAll('a').forEach(function (anchor) {
-      var label = (anchor.textContent || '').replace(/\s+/g, ' ').trim();
-      if (anchor.matches('a[href*="cakto.com"]') || /ACESSAR WORKFLOW|COMEÇAR|ENTRAR NA CODEBEN|PRIMEIRO RESULTADO/i.test(label)) {
-        var section = anchor.closest('section');
-        var ctaLabel = section && section.classList.contains('framer-w6lvb9') ? CTA_LABELS[1] :
-          section && section.classList.contains('framer-50ocvf') ? CTA_LABELS[2] : CTA_LABELS[0];
-        setCta(anchor, ctaLabel);
-      }
-    });
+    setupCtaLinks();
   }
 
   function setupHeadlineMotion() {
