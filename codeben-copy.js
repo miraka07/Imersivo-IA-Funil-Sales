@@ -4,7 +4,7 @@
   if (window.__codebenSiteInitialized) return;
   window.__codebenSiteInitialized = true;
 
-  var CHECKOUT = 'https://pay.cakto.com.br/32iz4ye_1114873';
+  var CHECKOUT = 'https://pay.cakto.com.br/32iz4ye_1128231';
   var CTA_LABELS = ['SUBIR O NÍVEL', 'QUERO ESSE MÉTODO', 'ENTRAR AGORA'];
 
   function walkText(callback) {

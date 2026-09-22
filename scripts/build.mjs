@@ -27,6 +27,7 @@ writeFileSync(join(output, 'js', trackingFile), trackingSource);
 cpSync(join(root, 'sitecloner-runtime.js'), join(output, 'js', 'sitecloner-runtime.js'));
 
 let html = readFileSync(join(root, 'index.html'), 'utf8');
+html = html.replaceAll('https://pay.cakto.com.br/32iz4ye_1114873', 'https://pay.cakto.com.br/32iz4ye_1128231');
 // The captured editor bootstrap and analytics are not part of the CODEBEN page;
 // removing them keeps production mobile loads independent of Framer tooling.
 html = html.replace(/<script>try\{if\(localStorage\.getItem\("__framer_force_showing_editorbar_since"\)[\s\S]*?<\/script>/, '');

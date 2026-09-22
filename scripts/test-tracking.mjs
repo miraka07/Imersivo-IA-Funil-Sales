@@ -16,7 +16,7 @@ const listeners = {};
 
 function createAnchor(label) {
   const attributes = {
-    href: 'https://pay.cakto.com.br/32iz4ye_1114873',
+    href: 'https://pay.cakto.com.br/32iz4ye_1128231',
     'aria-label': `${label} — checkout CODEBEN`
   };
   return {
