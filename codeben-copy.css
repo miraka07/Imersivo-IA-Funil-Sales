@@ -201,13 +201,13 @@ section.framer-1qh7qe0 .framer-hm8r3u h2{--framer-text-alignment:center!importan
 
 /* Stagger the CTA letters on hover and keyboard focus. */
 /* Keep the hero CTA above its decorative masking layer so it receives hover and clicks. */
-section.framer-p1ldqa a[href^="https://pay.cakto.com.br/32iz4ye_1128231"]{z-index:2!important}
-a[href^="https://pay.cakto.com.br/32iz4ye_1128231"] p[class*="rolling-text-inner"] span{
+section.framer-p1ldqa a.codeben-cta{z-index:2!important}
+a.codeben-cta p[class*="rolling-text-inner"] span{
   transition:transform .48s cubic-bezier(.2,.8,.2,1)!important;
   transition-delay:calc(var(--codeben-letter-index,0) * 22ms)!important;
 }
 @media (hover:hover) and (pointer:fine){
-  a[href^="https://pay.cakto.com.br/32iz4ye_1128231"]:hover p[class*="rolling-text-inner"] span{transform:translateY(-100%)!important}
+  a.codeben-cta:hover p[class*="rolling-text-inner"] span{transform:translateY(-100%)!important}
   .codeben-project-video-frame,
   .codeben-template-video-frame,
   .codeben-scenes-video-frame,
@@ -231,11 +231,11 @@ a[href^="https://pay.cakto.com.br/32iz4ye_1128231"] p[class*="rolling-text-inner
     scale:1.07;
   }
 }
-a[href^="https://pay.cakto.com.br/32iz4ye_1128231"]:focus-visible{outline:2px solid #fff!important;outline-offset:4px!important}
-a[href^="https://pay.cakto.com.br/32iz4ye_1128231"]:focus-visible p[class*="rolling-text-inner"] span{transform:translateY(-100%)!important}
+a.codeben-cta:focus-visible{outline:2px solid #fff!important;outline-offset:4px!important}
+a.codeben-cta:focus-visible p[class*="rolling-text-inner"] span{transform:translateY(-100%)!important}
 @media (prefers-reduced-motion:reduce){
   .codeben-glow-headline.codeben-headline-visible{animation:none!important}
-  a[href^="https://pay.cakto.com.br/32iz4ye_1128231"] p[class*="rolling-text-inner"] span{transition:none!important;transform:none!important}
+  a.codeben-cta p[class*="rolling-text-inner"] span{transition:none!important;transform:none!important}
   .codeben-project-video-frame,.codeben-template-video-frame,.codeben-scenes-video-frame,.codeben-gsap-video-frame,
   .codeben-process-block > .codeben-video-media,.codeben-extension-section > .codeben-video-media,
   .codeben-results-section > .codeben-video-media{transition:none!important;scale:1!important}

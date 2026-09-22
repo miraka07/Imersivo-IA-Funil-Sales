@@ -6,6 +6,37 @@ const root = resolve(import.meta.dirname, '..');
 const output = join(root, 'dist');
 const manifest = JSON.parse(readFileSync(join(root, 'sitecloner-resource-manifest.json'), 'utf8'));
 
+function renderCtaLabel(fragment, label) {
+  const next = fragment.replace(
+    /aria-label="[^"]* — checkout CODEBEN"/g,
+    `aria-label="${label} — checkout CODEBEN"`,
+  );
+  return next.replace(
+    /(<p class="rolling-text-inner[^>]*>)[\s\S]*?(<\/p>)/g,
+    (match, open, close) => {
+      const styleMatch = match.match(/<span([^>]*)>/);
+      const baseAttributes = styleMatch?.[1] ?? '';
+      return `${open}${[...label].map((letter, index) => {
+        const attributes = baseAttributes.replace(
+          /--codeben-letter-index:\s*\d+;?/,
+          `--codeben-letter-index: ${index};`,
+        );
+        return `<span${attributes}>${letter === ' ' ? '&nbsp;' : letter}</span>`;
+      }).join('')}${close}`;
+    },
+  );
+}
+
+function normalizeCtaSection(markup, sectionClass, label) {
+  const sectionPattern = new RegExp(
+    `(<section\\b[^>]*class="[^"]*${sectionClass}[^"]*"[^>]*>)([\\s\\S]*?)(</section>)`,
+    'g',
+  );
+  return markup.replace(sectionPattern, (match, open, body, close) => (
+    `${open}${renderCtaLabel(body, label)}${close}`
+  ));
+}
+
 for (const resource of manifest.resources ?? []) {
   if (!resource.localPath?.startsWith('resources/https/') || !resource.replayUrl?.startsWith('/__sitecloner_resource__/https/')) {
     throw new Error(`Invalid captured asset path: ${resource.localPath ?? 'missing'}`);
@@ -29,6 +60,13 @@ cpSync(join(root, 'sitecloner-runtime.js'), join(output, 'js', 'sitecloner-runti
 let html = readFileSync(join(root, 'index.html'), 'utf8');
 html = html.replaceAll('https://pay.cakto.com.br/32iz4ye_1114873', 'https://pay.cakto.com.br/32iz4ye_1128231');
 html = html.replace(/(<a\b[^>]*href="https:\/\/pay\.cakto\.com\.br\/32iz4ye_1128231"[^>]*?)target="_blank"/g, '$1target="_self"');
+// The production build is static, so keep the three CTA messages consistent
+// across every desktop and mobile variant instead of relying on the optional
+// Framer copy enhancer at runtime.
+html = normalizeCtaSection(html, 'framer-p1ldqa', 'SUBIR O NÍVEL');
+html = normalizeCtaSection(html, 'framer-w6lvb9', 'QUERO ESSE MÉTODO');
+html = normalizeCtaSection(html, 'framer-50ocvf', 'ENTRAR AGORA');
+html = normalizeCtaSection(html, 'framer-18ndqqk', 'SUBIR O NÍVEL');
 // These are content sections, not 16:9 media frames. The captured markup
 // accidentally shared the frame class with them, which forced a fixed mobile
 // aspect ratio and clipped/overlaid their copy.
