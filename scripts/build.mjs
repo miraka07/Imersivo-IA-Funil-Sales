@@ -67,6 +67,15 @@ html = normalizeCtaSection(html, 'framer-p1ldqa', 'SUBIR O NÍVEL');
 html = normalizeCtaSection(html, 'framer-w6lvb9', 'QUERO ESSE MÉTODO');
 html = normalizeCtaSection(html, 'framer-50ocvf', 'ENTRAR AGORA');
 html = normalizeCtaSection(html, 'framer-18ndqqk', 'SUBIR O NÍVEL');
+// The Framer export leaves the last offer CTA inside an animated block. Keep a
+// visible conversion action after the closing argument in the static build.
+if (!html.includes('codeben-final-cta')) {
+  const finalCta = '<div class="codeben-final-cta-wrap"><a class="codeben-cta codeben-final-cta" href="https://pay.cakto.com.br/32iz4ye_1128231" target="_self" rel="noopener noreferrer" aria-label="ENTRAR AGORA — checkout CODEBEN"><span>ENTRAR AGORA</span><span aria-hidden="true">↗</span></a></div>';
+  html = html.replace(
+    /(<p data-codeben-closing-note="true"[^>]*>[\s\S]*?<\/p>)/,
+    `$1${finalCta}`,
+  );
+}
 // These are content sections, not 16:9 media frames. The captured markup
 // accidentally shared the frame class with them, which forced a fixed mobile
 // aspect ratio and clipped/overlaid their copy.
