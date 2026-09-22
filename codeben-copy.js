@@ -614,7 +614,6 @@
     hideStats();
     addExtensionNote();
     setupTwoModules();
-    applyEditorialCopy();
     setupCtaLinks();
   }
 
@@ -655,6 +654,8 @@
     // Framer owns #main during hydration. Mutating it before React finishes
     // causes removeChild errors and leaves the page unresponsive.
     var delay = window.matchMedia && window.matchMedia('(max-width: 809px)').matches ? 16000 : 3500;
+    // CTA setup must not wait for Framer hydration or deferred visual copy.
+    setupCtaLinks();
     window.setTimeout(start, delay);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startAfterHydration, { once: true });
