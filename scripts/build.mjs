@@ -29,6 +29,17 @@ cpSync(join(root, 'sitecloner-runtime.js'), join(output, 'js', 'sitecloner-runti
 let html = readFileSync(join(root, 'index.html'), 'utf8');
 html = html.replaceAll('https://pay.cakto.com.br/32iz4ye_1114873', 'https://pay.cakto.com.br/32iz4ye_1128231');
 html = html.replace(/(<a\b[^>]*href="https:\/\/pay\.cakto\.com\.br\/32iz4ye_1128231"[^>]*?)target="_blank"/g, '$1target="_self"');
+// These are content sections, not 16:9 media frames. The captured markup
+// accidentally shared the frame class with them, which forced a fixed mobile
+// aspect ratio and clipped/overlaid their copy.
+html = html.replace(
+  'class="codeben-process-block codeben-project-video-frame"',
+  'class="codeben-process-block"',
+);
+html = html.replace(
+  'class="codeben-results-section codeben-project-video-card codeben-project-video-frame"',
+  'class="codeben-results-section"',
+);
 // The captured editor bootstrap and analytics are not part of the CODEBEN page;
 // removing them keeps production mobile loads independent of Framer tooling.
 html = html.replace(/<script>try\{if\(localStorage\.getItem\("__framer_force_showing_editorbar_since"\)[\s\S]*?<\/script>/, '');
@@ -62,6 +73,9 @@ const videoBootstrap = `<script>(function(){function play(){document.querySelect
 html = html.replace('</body>', videoBootstrap + '</body>');
 for (const path of ['/css/codeben-copy.css', `/js/${trackingFile}`, '/js/sitecloner-runtime.js']) {
   if (!html.includes(path)) throw new Error(`Built HTML does not reference ${path}`);
+}
+if (/data-codeben-(?:process-block|results-section)="true"[^>]*codeben-project-video-frame/.test(html)) {
+  throw new Error('Content section still inherits the fixed-ratio video frame class');
 }
 writeFileSync(join(output, 'index.html'), html);
 console.log(`Built ${output} with ${manifest.resources.length} captured assets.`);

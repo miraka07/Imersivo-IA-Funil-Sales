@@ -269,6 +269,50 @@ a[href^="https://pay.cakto.com.br/32iz4ye_1128231"]:focus-visible p[class*="roll
   section.codeben-mobile-hero [data-framer-appear-id]{opacity:1!important;transform:none!important}
 }
 
+/* Content sections must stay in normal document flow on mobile. This remains
+   as a guard even though the build removes the captured media-frame class. */
+@media (max-width:809px){
+  [data-codeben-process-block="true"],
+  [data-codeben-results-section="true"]{
+    position:relative!important;
+    display:block!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    aspect-ratio:auto!important;
+    overflow:visible!important;
+    contain:none!important;
+    transform:none!important;
+    box-sizing:border-box!important;
+  }
+  [data-codeben-process-block="true"] > *,
+  [data-codeben-results-section="true"] > *{
+    position:relative!important;
+    float:none!important;
+  }
+  [data-codeben-process-block="true"] > p,
+  [data-codeben-process-block="true"] > h2,
+  [data-codeben-process-block="true"] > .codeben-process-sequence,
+  [data-codeben-results-section="true"] > p,
+  [data-codeben-results-section="true"] > h2{
+    z-index:2!important;
+    width:auto!important;
+    height:auto!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  [data-codeben-process-block="true"] > .codeben-video-media,
+  [data-codeben-results-section="true"] > .codeben-video-media,
+  [data-codeben-results-section="true"] > [data-codeben-template-video-frame],
+  [data-codeben-results-section="true"] > [data-codeben-gsap-video-frame],
+  [data-codeben-results-section="true"] > [data-codeben-scenes-video-frame]{
+    position:relative!important;
+    z-index:1!important;
+    clear:both!important;
+  }
+}
+
 
 
 
