@@ -266,14 +266,14 @@
       if (anchor) trackCta(anchor);
     }, true);
     window.addEventListener('click', function (event) {
-      var anchor = event.target && event.target.closest ? event.target.closest('a') : null;
+      var anchor = event.target && event.target.closest ? event.target.closest('a,button,[role="button"]') : null;
       if (!anchor) return;
-      var label = clean(anchor.textContent || '');
+      var label = clean(anchor.textContent || anchor.getAttribute('aria-label') || '');
       var href = anchor.getAttribute('href') || '';
       if (!anchor.classList.contains('codeben-cta') && href.indexOf(checkoutHost) === -1 && !/SUBIR O NÍVEL|QUERO ESSE MÉTODO|ENTRAR AGORA|ACESSAR WORKFLOW/i.test(label)) return;
       event.preventDefault();
       event.stopImmediatePropagation();
-      anchor.setAttribute('href', checkoutUrl);
+      if (anchor.tagName === 'A') anchor.setAttribute('href', checkoutUrl);
       var popup = window.open(checkoutUrl, '_blank', 'noopener,noreferrer');
       if (!popup) window.location.assign(checkoutUrl);
     }, true);
