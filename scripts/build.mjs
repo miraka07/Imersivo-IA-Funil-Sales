@@ -35,7 +35,7 @@ html = html.replace(/<script async="" src="\/__sitecloner_resource__\/https\/eve
 html = html.replace(/<link rel="modulepreload"[^>]+>/g, '');
 const mainBundle = html.match(/<script type="module" async="" data-framer-bundle="main"[^>]+src="([^"]+)"[^>]*><\/script>/);
 if (!mainBundle) throw new Error('Framer main bundle not found in captured HTML');
-const mainLoader = `<script>(function(){var src=${JSON.stringify(mainBundle[1])},loaded=false;function load(){if(loaded)return;loaded=true;var s=document.createElement('script');s.type='module';s.async=true;s.dataset.framerBundle='main';s.src=src;document.head.appendChild(s)}if(window.matchMedia&&window.matchMedia('(max-width: 809px)').matches){['pointerdown','touchstart','scroll','keydown'].forEach(function(e){window.addEventListener(e,load,{once:true,passive:true})});setTimeout(load,15000)}else load()})();</script>`;
+const mainLoader = `<script>(function(){var src=${JSON.stringify(mainBundle[1])},s=document.createElement('script');s.type='module';s.async=true;s.dataset.framerBundle='main';s.src=src;document.head.appendChild(s)})();</script>`;
 html = html.replace(mainBundle[0], mainLoader);
 html = html.replaceAll('href="/codeben-copy.css"', 'href="/css/codeben-copy.css"');
 html = html.replaceAll('src="/codeben-copy.js"', 'src="/js/codeben-copy.js"');
