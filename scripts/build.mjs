@@ -42,7 +42,9 @@ html = html.replace(/src="\/codeben-tracking\.js(?:\?[^\"]*)?"/g, `src="/js/${tr
 html = html.replaceAll('src="/sitecloner-runtime.js"', 'src="/js/sitecloner-runtime.js"');
 html = html.replace('<script src="/js/sitecloner-runtime.js"></script>', '<script src="/js/sitecloner-runtime.js" defer></script>');
 const copyScript = '<script src="/js/codeben-copy.js" defer></script>';
-const copyLoader = `<script>(function(){var src='/js/codeben-copy.js',loaded=false;function load(){if(loaded)return;loaded=true;var s=document.createElement('script');s.defer=true;s.src=src;document.body.appendChild(s)}if(window.matchMedia&&window.matchMedia('(max-width: 809px)').matches){['pointerdown','touchstart','scroll','keydown'].forEach(function(e){window.addEventListener(e,load,{once:true,passive:true})});setTimeout(load,15000)}else load()})();</script>`;
+// CTA links are conversion-critical. Load their enhancer immediately on every
+// viewport so a first mobile touch cannot race the checkout URL assignment.
+const copyLoader = `<script>(function(){var s=document.createElement('script');s.defer=true;s.src='/js/codeben-copy.js';document.body.appendChild(s)})();</script>`;
 if (!html.includes(copyScript)) throw new Error('CODEBEN copy script not found in captured HTML');
 html = html.replace(copyScript, copyLoader);
 // Run the small tracking bootstrap synchronously at the end of <body>. This
